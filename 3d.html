@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style type="text/css">
+        * {
+            padding: 0;
+            margin: 0;
+            text-decoration: none;
+            list-style: none;
+            font: 14px '微软雅黑';
+            /**/
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+            -webkit-highlight: none;
+            -webkit-text-size-adjust: none;
+
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        input, button, select, textarea {
+            outline: 0 none;
+            border: 0px;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+
+            -webkit-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
+        #stage {
+            width: 500px;
+            height: 300px;
+            margin: 100px auto;
+            perspective: 3000px;
+            /*border: 1px solid #000;*/
+        }
+
+        #stage-mask{
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+
+        }
+        .section {
+            width: 500px;
+            height: 300px;
+            /*border: 1px solid #000;*/
+            /*transition: all 1s ease 0s;*/
+            box-shadow: 0px 0px 16px rgba(0, 0, 0, 0.6);
+            border-radius: 5px;
+            background: url("img/1.jpeg") no-repeat;
+            background-size:cover;
+            position: relative;
+        }
+
+        .txt{
+            position: absolute;
+            font-size: 200px;
+            top: 50%;
+            left: 50%;
+            color: red;
+			display:none;
+        }
+    </style>
+
+</head>
+<body>
+<div id='location'>location:</div>
+<div id='stage'>
+    <div id="stage-mask">
+        <div class='section'>
+            <div class='txt'>1799</div>
+        </div>
+    </div>
+</div>
+
+
+<script src='http://apps.bdimg.com/libs/jquery/1.8.3/jquery.min.js'></script>
+<script src='js/tool/velocity.min.js'></script>
+<script src='js/tool/velocity.ui.js'></script>
+<script>
+    $(function () {
+
+        $(document).mousemove(function (e) {
+            $("#location").text('location:' + e.pageX + ", " + e.pageY);
+        })
+
+        var stageLeft = $('#stage-mask').offset().left;
+        var stageTop = $('#stage-mask').offset().top;
+        var stageW = $('#stage-mask').width();
+        var stageH = $('#stage-mask').height();
+
+        var totalDegreeX = 10;
+        var totalDegreeY = 6;
+
+        $('#stage-mask')
+                .on('mouseenter', function (e) {
+
+                })
+                .on('mousemove', function (e) {
+                    var pageX = e.pageX;
+                    var pageY = e.pageY;
+
+                    //一元二次 y=kx+b;
+                    var k1 = 2 * totalDegreeY / stageW;
+                    var b1 = -k1 * (stageLeft + stageW / 2);
+
+                    var x1 = (pageX);
+                    var y1 = k1 * x1 + b1; //y1是rotateY的值
+
+                    var k2 = 2 * totalDegreeX / stageH;
+                    var b2 = -k2 * (stageTop + stageH / 2);
+
+                    var x2 = (pageY);
+                    var y2 = k2 * x2 + b2; //y1是rotateY的值
+
+                    $('.section').css({transform: 'rotateY(' + y1 + 'deg) rotateX(' + -y2 + 'deg)'})
+                            .css({transition: 'all 0.2s linear'})
+
+                    $('.txt').css({transform: 'rotateY(' + -5*y1 + 'deg) rotateX(' + 5*y2 + 'deg)'})
+                            .css({transition: 'all 0.2s linear'})
+
+
+                })
+                .on('mouseleave', function () {
+                    $('.section').css({transform: 'rotateY(0deg) rotateX(0deg)'})
+                            .css({transition: 'all 0.6s ease-in-out'})
+
+                    $('.txt').css({transform: 'rotateY(0deg) rotateX(0deg)'})
+                            .css({transition: 'all 0.6s ease-in-out'})
+
+                })
+
+
+    })
+</script>
+</body>
+</html>
